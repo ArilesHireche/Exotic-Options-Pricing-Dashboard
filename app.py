@@ -313,7 +313,7 @@ elif option_type == "Barrier":
 
         #Call visualisation
         price_grid_call = barrier_grid(S = params["S"], Ks=K_grid, H=params["H"], Ts=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=True, knock = params["knock"]) #Building the prices grid
-        fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params['knock'] if params['knock'] == "Knock-In" else "Knock-Out"} Call Premium (with constant vol)")
+        fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params['knock'] if params['knock'] == 'Knock-In' else 'Knock-Out'} Call Premium (with constant vol)")
         
         tab1, tab2 = st.columns(2) #Displaying side by side the visualisation
         with tab1:
