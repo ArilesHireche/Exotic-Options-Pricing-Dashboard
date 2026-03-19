@@ -14,7 +14,7 @@ import plotly.graph_objects as go   #check if truly mandatory as imported in BSM
 st.set_page_config(page_title="Exotic Option Pricing Dashboard", page_icon="💲", layout ="wide")
 st.title("Exotic Option Pricing Dashboard")
 #st.tabs(["outputs", "surface", "hedging"])
-option_type = st.selectbox("Select Option Type", options=["American", "Barrier", "Asian", "European", "BO/WO"], key="opt_type")
+option_type = st.selectbox("Select Option Type", options=["Barrier", "Asian", "American", "European", "BO/WO"], key="opt_type")
 
 #Storing the intent of buttons choices to get faster
 #if "show_tree_viz" not in st.session_state:
@@ -91,63 +91,7 @@ c1, c2 = st.columns(2) #Displaying side by side premium and computation time
 show_greeks_viz = st.toggle("Greeks computations")
 #Binomial Tree pricing
 delta, gamma, vega, theta, ro = st.columns(5)
-if option_type == "American":
-    t0 = time.perf_counter()
-    price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
-    length = time.perf_counter() - t0
-    with c1:
-        st.metric("Premium", f"{price:.4f}")
-        st.caption(f"Method: Binomial Tree")
-
-    #Computation time button
-    with c2:
-        if st.button("Run time"):
-            st.session_state.show_time_viz = True
-        if st.session_state.show_time_viz:
-            st.info(f"Computation time: {length:.6f} seconds")
-
-    #Greeks
-    if show_greeks_viz:
-        col_d, col_g, col_v, col_t, col_r = st.columns(5)
-
-        # delta =
-        # gamma =
-        # vega =
-        # theta =
-        # rho=
-
-        # with col_d:
-        #     st.metric("Δ", f"{delta:.4f}")
-        # with col_g:
-        #     st.metric("Γ", f"{gamma:.4f}")
-        # with col_v:
-        #     st.metric("ν", f"{vega:.4f}")
-        # with col_t:
-        #     st.metric("Θ", f"{theta:.4f}")
-        # with col_r:
-        #     st.metric("ρ", f"{rho:.4f}")
-
-    #Visualisation button
-    show_tree_viz = st.toggle("Visualisation")
-    if show_tree_viz:
-        st.subheader("Binomial Tree Visualisation")
-    
-        S_T, St_vals, P_vals = bin_tree_amer_path(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
-        
-        df_St = pd.DataFrame(St_vals, index=range(10, 0, -1)).replace({np.nan: ""})
-        df_P  = pd.DataFrame(P_vals, index=range(10, 0, -1)).replace({np.nan: ""})
-
-        st.caption("Note: For visualisation purposes, the number of steps is set to 10.")
-
-        st.subheader("Underlying (last 10 steps)")
-        st.dataframe(df_St, use_container_width=True)
-
-        st.subheader("Option value (last 10 steps)")
-        st.dataframe(df_P, use_container_width=True)
-        #if params["n_step"]<=30 : Use later when offering n_stesp choice to users
-            #st.write("Expected spot at maturity ( T =", np.round(params["T"], 4), ") under the risk neutral measure.\n", ST, "\n")
-
-elif option_type == "Asian":
+if option_type == "Asian":
     if params["avg_type"] == "Geometric": 
         t0 = time.perf_counter()
         price = KemnaVorstGeo(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))
@@ -323,6 +267,62 @@ elif option_type == "Barrier":
         fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"{params["knock"] if params["knock"] == "Knock-In" else "Knock-Out"} Put Premium (with constant vol)")
         with tab2:
            st.plotly_chart(fig, use_container_width=True)
+
+if option_type == "American":
+    t0 = time.perf_counter()
+    price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
+    length = time.perf_counter() - t0
+    with c1:
+        st.metric("Premium", f"{price:.4f}")
+        st.caption(f"Method: Binomial Tree")
+
+    #Computation time button
+    with c2:
+        if st.button("Run time"):
+            st.session_state.show_time_viz = True
+        if st.session_state.show_time_viz:
+            st.info(f"Computation time: {length:.6f} seconds")
+
+    #Greeks
+    if show_greeks_viz:
+        col_d, col_g, col_v, col_t, col_r = st.columns(5)
+
+        # delta =
+        # gamma =
+        # vega =
+        # theta =
+        # rho=
+
+        # with col_d:
+        #     st.metric("Δ", f"{delta:.4f}")
+        # with col_g:
+        #     st.metric("Γ", f"{gamma:.4f}")
+        # with col_v:
+        #     st.metric("ν", f"{vega:.4f}")
+        # with col_t:
+        #     st.metric("Θ", f"{theta:.4f}")
+        # with col_r:
+        #     st.metric("ρ", f"{rho:.4f}")
+
+    #Visualisation button
+    show_tree_viz = st.toggle("Visualisation")
+    if show_tree_viz:
+        st.subheader("Binomial Tree Visualisation")
+    
+        S_T, St_vals, P_vals = bin_tree_amer_path(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
+        
+        df_St = pd.DataFrame(St_vals, index=range(10, 0, -1)).replace({np.nan: ""})
+        df_P  = pd.DataFrame(P_vals, index=range(10, 0, -1)).replace({np.nan: ""})
+
+        st.caption("Note: For visualisation purposes, the number of steps is set to 10.")
+
+        st.subheader("Underlying (last 10 steps)")
+        st.dataframe(df_St, use_container_width=True)
+
+        st.subheader("Option value (last 10 steps)")
+        st.dataframe(df_P, use_container_width=True)
+        #if params["n_step"]<=30 : Use later when offering n_stesp choice to users
+            #st.write("Expected spot at maturity ( T =", np.round(params["T"], 4), ") under the risk neutral measure.\n", ST, "\n")
 
 elif option_type == "BO/WO":
     t0 = time.perf_counter()
