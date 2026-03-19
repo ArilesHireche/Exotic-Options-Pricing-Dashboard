@@ -60,7 +60,7 @@ def bin_tree_amer_numba_loop(S, K, T, vol, r, q, n_step, call=False):
 
     return P[0]
 
-@njit(cache=True)
+# @njit(cache=True)
 def bin_tree_amer_path(S, K, T, vol, r, q, n_step, call=False):
     # Displaying the binomial tree in row format, returning arrays that will be
     # rearranged in the app.py file for Streamlit visualisation
