@@ -17,10 +17,17 @@ st.title("Exotic Option Pricing Dashboard")
 option_type = st.selectbox("Select Option Type", options=["Asian", "American", "Barrier", "European", "BO/WO"], key="opt_type")
 
 #Storing the intent of buttons choices to get faster
-#if "show_tree_viz" not in st.session_state:
-    #st.session_state.show_tree_viz = False
 if "show_time_viz" not in st.session_state:
     st.session_state.show_time_viz = False
+
+#Ensuring proper execution of the first call of the app when deployed online
+if "ready" not in st.session_state:
+    st.session_state["ready"] = False
+#Then wrap the entire pricing logic
+if not st.session_state.get("ready", False):
+    st.info("Initializing... please wait.")
+    st.session_state["ready"] = True
+    st.rerun()
 
 #Option-specific parameters
 def barrier_params():
@@ -211,13 +218,9 @@ if option_type == "Asian":
                 st.pyplot(ST_dist(AsianAritVarReduc(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))[2], title="Arithmetic average distribution"))
 
 elif option_type == "American":
-    if st.session_state.get("ready", False): #Avoids crashing of the app when deploying onlide due to @njit call
-        t0 = time.perf_counter()
-        price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
-        length = time.perf_counter() - t0
-    else:
-        st.session_state["ready"] = True
-        st.rerun() #Calling back the code
+    t0 = time.perf_counter()
+    price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
+    length = time.perf_counter() - t0
     with c1:
         st.metric("Premium", f"{price:.4f}")
         st.caption(f"Method: Binomial Tree")
