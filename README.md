@@ -5,10 +5,6 @@ An interactive Streamlit dashboard for pricing exotic options using numerical me
 Most of the code is heavily commented and written to be as explicit as possible — feel free to explore the modules, and hopefully have some fun along the way. Do not hesitate to text me on LinkedIn if you find any area of improvement, I would be happy to discuss it!
 
 ---
-
-Note: The app was uploaded with Python 3.11 by default to ensure a proper call of numba in my functions (@njit). It should however work with Python 3.14 on your local machine.
-
----
  
 ## Features
  
@@ -77,3 +73,5 @@ Exotic-Options-Pricing-Dashboard/
 ## Live Demo
  
 🔗 [exotic-options-pricing.streamlit.app](https://exo-pricer-hirecheariles.streamlit.app) 
+
+> **Note:** The app is deployed with Python 3.11 to ensure proper compatibility with Numba's `@njit` decorator. It should however work fine with Python 3.13 on your local machine. See [Numba documentation](https://numba.readthedocs.io/en/stable/) for more details.
