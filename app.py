@@ -14,7 +14,7 @@ import plotly.graph_objects as go   #check if truly mandatory as imported in BSM
 st.set_page_config(page_title="Exotic Option Pricing Dashboard", page_icon="💲", layout ="wide")
 st.title("Exotic Option Pricing Dashboard")
 #st.tabs(["outputs", "surface", "hedging"])
-option_type = st.selectbox("Select Option Type", options=["Barrier", "Asian", "American", "European", "BO/WO"], key="opt_type")
+option_type = st.selectbox("Select Option Type", options=["Asian", "American", "Barrier", "European", "BO/WO"], key="opt_type")
 
 #Storing the intent of buttons choices to get faster
 #if "show_tree_viz" not in st.session_state:
@@ -108,7 +108,7 @@ if option_type == "Asian":
                 st.session_state.show_time_viz = True
             if st.session_state.show_time_viz:
                 st.info(f"Computation time: {length:.6f} seconds")
-
+        
         if show_greeks_viz:
             col_d, col_g, col_v, col_t, col_r = st.columns(5)
             S, K, T, vol, r, q, call = params["S"], params["K"], params["T"], params["vol"], params["r"], params["q"], (params["cp"]=="Call")
@@ -131,31 +131,33 @@ if option_type == "Asian":
                 st.metric("Θ", f"{theta:.4f}")
             with col_r:
                 st.metric("ρ", f"{rho:.4f}")
-        
+            
         #Visualisation button
         show_asian_viz = st.toggle("Visualisation")
         if show_asian_viz:
-            st.subheader("BSM Option Premium Visualisation")
 
-            #Building the K-T grid
-            K, T =  params["K"], params["T"]
-            Ks, Ts = np.linspace(1.2*K, 0.8*K, 9), np.linspace(1.2*T, 0.8*T, 9)
-            K_grid, T_grid = np.meshgrid(Ks, Ts, indexing='xy') #Return a list of coordinate matrices from coordinate vectors.
+            if params["avg_type"] == "Geometric":
+                st.subheader("BSM Option Premium Visualisation")
 
-            #Call visualisation
-            price_grid_call = KemnaVorstGeo(S = params["S"], K=K_grid, T=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=True) #Building the prices grid
+                #Building the K-T grid
+                K, T =  params["K"], params["T"]
+                Ks, Ts = np.linspace(1.2*K, 0.8*K, 9), np.linspace(1.2*T, 0.8*T, 9)
+                K_grid, T_grid = np.meshgrid(Ks, Ts, indexing='xy') #Return a list of coordinate matrices from coordinate vectors.
 
-            fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params["avg_type"]} average Call Premium (with constant vol)")
-            
-            tab1, tab2 = st.columns(2) #Displaying side by side the visualisation
-            with tab1:
-                st.plotly_chart(fig, use_container_width=True)
+                #Call visualisation
+                price_grid_call = KemnaVorstGeo(S = params["S"], K=K_grid, T=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=True) #Building the prices grid
 
-            #Put visualisation
-            price_grid_put = KemnaVorstGeo(S = params["S"], K=K_grid, T=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=False)
-            fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"Geometric average Put Premium (with constant vol)")
-            with tab2:
-                st.plotly_chart(fig, use_container_width=True)
+                fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params["avg_type"]} average Call Premium (with constant vol)")
+                
+                tab1, tab2 = st.columns(2) #Displaying side by side the visualisation
+                with tab1:
+                    st.plotly_chart(fig, use_container_width=True)
+
+                #Put visualisation
+                price_grid_put = KemnaVorstGeo(S = params["S"], K=K_grid, T=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=False)
+                fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"Geometric average Put Premium (with constant vol)")
+                with tab2:
+                    st.plotly_chart(fig, use_container_width=True)
 
     else:    
         t0 = time.perf_counter()
@@ -174,28 +176,28 @@ if option_type == "Asian":
             if st.session_state.show_time_viz:
                 st.info(f"Computation time: {length:.6f} seconds")
 
-        if show_greeks_viz:
-            col_d, col_g, col_v, col_t, col_r = st.columns(5)
-            # S, K, T, vol, r, q, call = params["S"], params["K"], params["T"], params["vol"], params["r"], params["q"], (params["cp"]=="Call")
-            # dS, dvol, dT, dr = S*0.0001, 0.0001, 1/252, 0.0001
-            # f = KemnaVorstGeo  #Make it easier to write
+        # if show_greeks_viz:
+        #     col_d, col_g, col_v, col_t, col_r = st.columns(5)
+        #     S, K, T, vol, r, q, call = params["S"], params["K"], params["T"], params["vol"], params["r"], params["q"], (params["cp"]=="Call")
+        #     dS, dvol, dT, dr = S*0.0001, 0.0001, 1/252, 0.0001
+        #     f = KemnaVorstGeo  #Make it easier to write
             
-            # delta = (f(S+dS,K,T,vol,r,q,call) - f(S-dS,K,T,vol,r,q,call)) / (2*dS)
-            # gamma = (f(S+dS,K,T,vol,r,q,call) - 2*price + f(S-dS,K,T,vol,r,q,call)) / (dS**2)
-            # vega = (f(S,K,T,vol+dvol,r,q,call) - f(S,K,T,vol-dvol,r,q,call)) / (2*dvol) / 100
-            # theta = (f(S,K,T-dT,vol,r,q,call) - price) / dT / 365
-            # rho = (f(S,K,T,vol,r+dr,q,call) - f(S,K,T,vol,r-dr,q,call)) / (2*dr) / 100
+        #     delta = (f(S+dS,K,T,vol,r,q,call) - f(S-dS,K,T,vol,r,q,call)) / (2*dS)
+        #     gamma = (f(S+dS,K,T,vol,r,q,call) - 2*price + f(S-dS,K,T,vol,r,q,call)) / (dS**2)
+        #     vega = (f(S,K,T,vol+dvol,r,q,call) - f(S,K,T,vol-dvol,r,q,call)) / (2*dvol) / 100
+        #     theta = (f(S,K,T-dT,vol,r,q,call) - price) / dT / 365
+        #     rho = (f(S,K,T,vol,r+dr,q,call) - f(S,K,T,vol,r-dr,q,call)) / (2*dr) / 100
             
-            # with col_d:
-            #     st.metric("Δ", f"{delta:.4f}")
-            # with col_g:
-            #     st.metric("Γ", f"{gamma:.4f}")
-            # with col_v:
-            #     st.metric("ν", f"{vega:.4f}")
-            # with col_t:
-            #     st.metric("Θ", f"{theta:.4f}")
-            # with col_r:
-            #     st.metric("ρ", f"{rho:.4f}")
+        #     with col_d:
+        #         st.metric("Δ", f"{delta:.4f}")
+        #     with col_g:
+        #         st.metric("Γ", f"{gamma:.4f}")
+        #     with col_v:
+        #         st.metric("ν", f"{vega:.4f}")
+        #     with col_t:
+        #         st.metric("Θ", f"{theta:.4f}")
+        #     with col_r:
+        #         st.metric("ρ", f"{rho:.4f}")
 
         #Visualisation button
         show_asian_viz = st.toggle("Visualisation")
@@ -207,6 +209,66 @@ if option_type == "Asian":
                 st.pyplot(plot_paths(AsianAritVarReduc(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))[3]))
             with tab2:
                 st.pyplot(ST_dist(AsianAritVarReduc(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))[2], title="Arithmetic average distribution"))
+
+elif option_type == "American":
+    if st.session_state.get("ready", False): #Avoids crashing of the app when deploying onlide due to @njit call
+        t0 = time.perf_counter()
+        price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
+        length = time.perf_counter() - t0
+    else:
+        st.session_state["ready"] = True
+        st.rerun() #Calling back the code
+    with c1:
+        st.metric("Premium", f"{price:.4f}")
+        st.caption(f"Method: Binomial Tree")
+
+    #Computation time button
+    with c2:
+        if st.button("Run time"):
+            st.session_state.show_time_viz = True
+        if st.session_state.show_time_viz:
+            st.info(f"Computation time: {length:.6f} seconds")
+
+    #Greeks
+    if show_greeks_viz:
+        col_d, col_g, col_v, col_t, col_r = st.columns(5)
+
+        # delta =
+        # gamma =
+        # vega =
+        # theta =
+        # rho=
+
+        # with col_d:
+        #     st.metric("Δ", f"{delta:.4f}")
+        # with col_g:
+        #     st.metric("Γ", f"{gamma:.4f}")
+        # with col_v:
+        #     st.metric("ν", f"{vega:.4f}")
+        # with col_t:
+        #     st.metric("Θ", f"{theta:.4f}")
+        # with col_r:
+        #     st.metric("ρ", f"{rho:.4f}")
+
+    #Visualisation button
+    show_tree_viz = st.toggle("Visualisation")
+    if show_tree_viz:
+        st.subheader("Binomial Tree Visualisation")
+    
+        S_T, St_vals, P_vals = bin_tree_amer_path(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
+        
+        df_St = pd.DataFrame(St_vals, index=range(10, 0, -1)).replace({np.nan: ""})
+        df_P  = pd.DataFrame(P_vals, index=range(10, 0, -1)).replace({np.nan: ""})
+
+        st.caption("Note: For visualisation purposes, the number of steps is set to 10.")
+
+        st.subheader("Underlying (last 10 steps)")
+        st.dataframe(df_St, use_container_width=True)
+
+        st.subheader("Option value (last 10 steps)")
+        st.dataframe(df_P, use_container_width=True)
+        #if params["n_step"]<=30 : Use later when offering n_stesp choice to users
+            #st.write("Expected spot at maturity ( T =", np.round(params["T"], 4), ") under the risk neutral measure.\n", ST, "\n")
 
 elif option_type == "Barrier":
     t0 = time.perf_counter()
@@ -267,62 +329,6 @@ elif option_type == "Barrier":
         fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"{params["knock"] if params["knock"] == "Knock-In" else "Knock-Out"} Put Premium (with constant vol)")
         with tab2:
            st.plotly_chart(fig, use_container_width=True)
-
-if option_type == "American":
-    t0 = time.perf_counter()
-    price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
-    length = time.perf_counter() - t0
-    with c1:
-        st.metric("Premium", f"{price:.4f}")
-        st.caption(f"Method: Binomial Tree")
-
-    #Computation time button
-    with c2:
-        if st.button("Run time"):
-            st.session_state.show_time_viz = True
-        if st.session_state.show_time_viz:
-            st.info(f"Computation time: {length:.6f} seconds")
-
-    #Greeks
-    if show_greeks_viz:
-        col_d, col_g, col_v, col_t, col_r = st.columns(5)
-
-        # delta =
-        # gamma =
-        # vega =
-        # theta =
-        # rho=
-
-        # with col_d:
-        #     st.metric("Δ", f"{delta:.4f}")
-        # with col_g:
-        #     st.metric("Γ", f"{gamma:.4f}")
-        # with col_v:
-        #     st.metric("ν", f"{vega:.4f}")
-        # with col_t:
-        #     st.metric("Θ", f"{theta:.4f}")
-        # with col_r:
-        #     st.metric("ρ", f"{rho:.4f}")
-
-    #Visualisation button
-    show_tree_viz = st.toggle("Visualisation")
-    if show_tree_viz:
-        st.subheader("Binomial Tree Visualisation")
-    
-        S_T, St_vals, P_vals = bin_tree_amer_path(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
-        
-        df_St = pd.DataFrame(St_vals, index=range(10, 0, -1)).replace({np.nan: ""})
-        df_P  = pd.DataFrame(P_vals, index=range(10, 0, -1)).replace({np.nan: ""})
-
-        st.caption("Note: For visualisation purposes, the number of steps is set to 10.")
-
-        st.subheader("Underlying (last 10 steps)")
-        st.dataframe(df_St, use_container_width=True)
-
-        st.subheader("Option value (last 10 steps)")
-        st.dataframe(df_P, use_container_width=True)
-        #if params["n_step"]<=30 : Use later when offering n_stesp choice to users
-            #st.write("Expected spot at maturity ( T =", np.round(params["T"], 4), ") under the risk neutral measure.\n", ST, "\n")
 
 elif option_type == "BO/WO":
     t0 = time.perf_counter()
