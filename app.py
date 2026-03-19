@@ -321,7 +321,7 @@ elif option_type == "Barrier":
 
         #Put visualisation
         price_grid_put = barrier_grid(S = params["S"], Ks=K_grid, H=params["H"], Ts=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=False, knock = params["knock"])
-        fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"{params['knock'] if params['knock'] == "Knock-In" else 'Knock-Out'} Put Premium (with constant vol)")
+        fig = BSM_heatmap(price_grid_put, Ks, Ts, title=f"{params['knock'] if params['knock'] == 'Knock-In' else 'Knock-Out'} Put Premium (with constant vol)")
         with tab2:
            st.plotly_chart(fig, use_container_width=True)
 
