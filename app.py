@@ -1,10 +1,6 @@
 import streamlit as st
-from Trees.BinomialTree import bin_tree_amer_path
-from Trees.BinomialTree import bin_tree_amer_numba_loop
 from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
 from BSM.BSM import BSM_heatmap
-from MC.MC import AsianAritVarReduc
-from MC.MC import plot_paths, ST_dist
 import pandas as pd
 import numpy as np
 import time
@@ -14,7 +10,7 @@ import plotly.graph_objects as go   #check if truly mandatory as imported in BSM
 st.set_page_config(page_title="Exotic Option Pricing Dashboard", page_icon="💲", layout ="wide")
 st.title("Exotic Option Pricing Dashboard")
 #st.tabs(["outputs", "surface", "hedging"])
-option_type = st.selectbox("Select Option Type", options=["Asian", "American", "Barrier", "European", "BO/WO"], key="opt_type")
+option_type = st.selectbox("Select Option Type", options=["Barrier", "Asian", "American", "European", "BO/WO"], key="opt_type")
 
 #Storing the intent of buttons choices to get faster
 if "show_time_viz" not in st.session_state:
@@ -99,6 +95,8 @@ show_greeks_viz = st.toggle("Greeks computations")
 #Binomial Tree pricing
 delta, gamma, vega, theta, ro = st.columns(5)
 if option_type == "Asian":
+    from MC.MC import AsianAritVarReduc
+    from MC.MC import plot_paths, ST_dist
     if params["avg_type"] == "Geometric": 
         t0 = time.perf_counter()
         price = KemnaVorstGeo(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))
@@ -218,6 +216,9 @@ if option_type == "Asian":
                 st.pyplot(ST_dist(AsianAritVarReduc(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))[2], title="Arithmetic average distribution"))
 
 elif option_type == "American":
+    from Trees.BinomialTree import bin_tree_amer_path #We do lazy imports to avoid the app crashing with numba
+    from Trees.BinomialTree import bin_tree_amer_numba_loop
+
     t0 = time.perf_counter()
     price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
     length = time.perf_counter() - t0
