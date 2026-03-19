@@ -1,6 +1,6 @@
 import streamlit as st
-from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
-from BSM.BSM import BSM_heatmap
+#from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
+#from BSM.BSM import BSM_heatmap
 import pandas as pd
 import numpy as np
 import time
@@ -15,15 +15,6 @@ option_type = st.selectbox("Select Option Type", options=["Barrier", "Asian", "A
 #Storing the intent of buttons choices to get faster
 if "show_time_viz" not in st.session_state:
     st.session_state.show_time_viz = False
-
-#Ensuring proper execution of the first call of the app when deployed online
-if "ready" not in st.session_state:
-    st.session_state["ready"] = False
-#Then wrap the entire pricing logic
-if not st.session_state.get("ready", False):
-    st.info("Initializing... please wait.")
-    st.session_state["ready"] = True
-    st.rerun()
 
 #Option-specific parameters
 def barrier_params():
