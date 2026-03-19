@@ -2,8 +2,10 @@
  
 An interactive Streamlit dashboard for pricing exotic options using numerical methods. Built as part of a Master's in Finance at Université Paris Dauphine-PSL.
  
-Most of the code is heavily commented and written to be as explicit as possible — feel free to explore the modules, and hopefully have some fun along the way.
- 
+Most of the code is heavily commented and written to be as explicit as possible — feel free to explore the modules, and hopefully have some fun along the way. Do not hesitate to text me on LinkedIn if you find any area of improvement, I would be happy to discuss it!
+
+Note: The app was uploaded with Python 3.11 by default to ensure a proper call of numba in my functions (@njit). It should however work with Python 3.14 on your local machine.
+
 ---
  
 ## Features
