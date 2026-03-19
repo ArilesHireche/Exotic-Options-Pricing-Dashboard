@@ -143,7 +143,7 @@ if option_type == "Asian":
                 #Call visualisation
                 price_grid_call = KemnaVorstGeo(S = params["S"], K=K_grid, T=T_grid, vol=params["vol"], r=params["r"], q=params["q"], call=True) #Building the prices grid
 
-                fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params["avg_type"]} average Call Premium (with constant vol)")
+                fig = BSM_heatmap(price_grid_call, Ks, Ts, title=f"{params['avg_type']} average Call Premium (with constant vol)")
                 
                 tab1, tab2 = st.columns(2) #Displaying side by side the visualisation
                 with tab1:
