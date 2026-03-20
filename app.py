@@ -1,6 +1,10 @@
 import streamlit as st
 from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
 from BSM.BSM import BSM_heatmap
+from MC.MC import AsianAritVarReduc
+from MC.MC import plot_paths, ST_dist
+from Trees.BinomialTree import bin_tree_amer_path #We do lazy imports to avoid the app crashing with numba
+from Trees.BinomialTree import bin_tree_amer_numba_loop
 import pandas as pd
 import numpy as np
 import time
@@ -86,8 +90,6 @@ show_greeks_viz = st.toggle("Greeks computations")
 #Binomial Tree pricing
 delta, gamma, vega, theta, ro = st.columns(5)
 if option_type == "Asian":
-    from MC.MC import AsianAritVarReduc
-    from MC.MC import plot_paths, ST_dist
     if params["avg_type"] == "Geometric": 
         t0 = time.perf_counter()
         price = KemnaVorstGeo(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))
@@ -207,9 +209,6 @@ if option_type == "Asian":
                 st.pyplot(ST_dist(AsianAritVarReduc(S = params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], call=(params["cp"]=="Call"))[2], title="Arithmetic average distribution"))
 
 elif option_type == "American":
-    from Trees.BinomialTree import bin_tree_amer_path #We do lazy imports to avoid the app crashing with numba
-    from Trees.BinomialTree import bin_tree_amer_numba_loop
-
     t0 = time.perf_counter()
     price = bin_tree_amer_numba_loop(S=params["S"], K=params["K"], T=params["T"], vol=params["vol"], r=params["r"], q=params["q"], n_step=100, call=(params["cp"]=="Call"))
     length = time.perf_counter() - t0
