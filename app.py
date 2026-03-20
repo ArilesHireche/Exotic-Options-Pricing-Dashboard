@@ -110,11 +110,6 @@ if option_type == "Asian":
                 with r2:
                     st.caption("Run the app locally to get better performances")
 
-if st.session_state.show_time_viz:
-                st.info(f"Computation time: {length:.6f} seconds")
-
-I would like to display the message next to the run time button or within next to (on the right) of the computation time instead of below. How can I do so, aesthetically?
-        
         if show_greeks_viz:
             col_d, col_g, col_v, col_t, col_r = st.columns(5)
             S, K, T, vol, r, q, call = params["S"], params["K"], params["T"], params["vol"], params["r"], params["q"], (params["cp"]=="Call")
