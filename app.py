@@ -8,7 +8,6 @@ from Trees.BinomialTree import bin_tree_amer_numba_loop
 import pandas as pd
 import numpy as np
 import time
-import plotly.graph_objects as go   #check if truly mandatory as imported in BSM.py
 
 #Setting titles
 st.set_page_config(page_title="Exotic Option Pricing Dashboard", page_icon="💲", layout ="wide")
@@ -105,8 +104,16 @@ if option_type == "Asian":
             if st.button("Run time"):
                 st.session_state.show_time_viz = True
             if st.session_state.show_time_viz:
+                r1, r2 = st.columns([1, 1.6])
+                with r1:
+                    st.info(f"Computation time: {length:.6f} seconds")
+                with r2:
+                    st.caption("Run the app locally to get better performances")
+
+if st.session_state.show_time_viz:
                 st.info(f"Computation time: {length:.6f} seconds")
-                st.caption("Run the app locally to get better performances") 
+
+I would like to display the message next to the run time button or within next to (on the right) of the computation time instead of below. How can I do so, aesthetically?
         
         if show_greeks_viz:
             col_d, col_g, col_v, col_t, col_r = st.columns(5)
