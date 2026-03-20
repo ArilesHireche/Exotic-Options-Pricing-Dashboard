@@ -1,6 +1,6 @@
 import streamlit as st
-#from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
-#from BSM.BSM import BSM_heatmap
+from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, WO_BO_options
+from BSM.BSM import BSM_heatmap
 import pandas as pd
 import numpy as np
 import time
