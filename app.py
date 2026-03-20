@@ -101,7 +101,7 @@ if option_type == "Asian":
 
         #Computation time button
         with c2:
-            if st.button("Run time", help="Run the app locally to get better performances"):
+            if st.button("Run time"):
                 st.session_state.show_time_viz = True
             if st.session_state.show_time_viz:
                 st.info(f"Computation time: {length:.6f} seconds")
