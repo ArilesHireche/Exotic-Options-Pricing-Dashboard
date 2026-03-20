@@ -3,4 +3,5 @@ numpy==2.0.1
 pandas==2.2.3
 scipy==1.15.2
 plotly==6.0.1
+matplotlib==3.10.8
 numba==0.60.0
