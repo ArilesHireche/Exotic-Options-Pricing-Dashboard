@@ -168,7 +168,7 @@ if option_type == "Asian":
 
         #Computation time button
         with c2:
-            if st.button("Run time"):
+            if st.button("Run time", help="Run the app locally to get better performances"):
                 st.session_state.show_time_viz = True
             if st.session_state.show_time_viz:
                 st.info(f"Computation time: {length:.6f} seconds")
@@ -273,7 +273,7 @@ elif option_type == "Barrier":
 
     #Computation time button
     with c2:
-        if st.button("Run time"):
+        if st.button("Run time", help="Run the app locally to get better performances"):
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
@@ -334,7 +334,7 @@ elif option_type == "BO/WO":
 
     #Computation time button
     with c2:
-        if st.button("Run time"):
+        if st.button("Run time", help="Run the app locally to get better performances"):
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
@@ -370,7 +370,7 @@ elif option_type == "European":
 
     #Computation time button
     with c2:
-        if st.button("Run time"):
+        if st.button("Run time", help="Run the app locally to get better performances"):
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
