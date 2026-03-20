@@ -3,7 +3,7 @@ from BSM.BSM import european_vect, KemnaVorstGeo, barrier_price, barrier_grid, W
 from BSM.BSM import BSM_heatmap
 from MC.MC import AsianAritVarReduc
 from MC.MC import plot_paths, ST_dist
-from Trees.BinomialTree import bin_tree_amer_path #We do lazy imports to avoid the app crashing with numba
+from Trees.BinomialTree import bin_tree_amer_path
 from Trees.BinomialTree import bin_tree_amer_numba_loop
 import pandas as pd
 import numpy as np
