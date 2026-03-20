@@ -10,7 +10,7 @@ import plotly.graph_objects as go   #check if truly mandatory as imported in BSM
 st.set_page_config(page_title="Exotic Option Pricing Dashboard", page_icon="💲", layout ="wide")
 st.title("Exotic Option Pricing Dashboard")
 #st.tabs(["outputs", "surface", "hedging"])
-option_type = st.selectbox("Select Option Type", options=["Barrier", "Asian", "American", "European", "BO/WO"], key="opt_type")
+option_type = st.selectbox("Select Option Type", options=["Asian", "American", "Barrier", "European", "BO/WO"], key="opt_type")
 
 #Storing the intent of buttons choices to get faster
 if "show_time_viz" not in st.session_state:
