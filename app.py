@@ -107,8 +107,8 @@ if option_type == "Asian":
                 r1, r2 = st.columns([1, 1.6])
                 with r1:
                     st.info(f"Computation time: {length:.6f} seconds")
-                with r2:
-                    st.caption("Run the app locally to get better performances")
+                #with r2:
+                #    st.caption("Run the app locally to get better performances")
 
         if show_greeks_viz:
             col_d, col_g, col_v, col_t, col_r = st.columns(5)
