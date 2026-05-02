@@ -277,7 +277,7 @@ elif option_type == "Barrier":
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
-            st.caption("Run the app locally to get better performances") 
+            #st.caption("Run the app locally to get better performances") 
 
     #Greeks
     if show_greeks_viz:
@@ -338,7 +338,7 @@ elif option_type == "BO/WO":
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
-            st.caption("Run the app locally to get better performances") 
+            #st.caption("Run the app locally to get better performances") 
 
     #Greeks
     if show_greeks_viz:
@@ -374,7 +374,7 @@ elif option_type == "European":
             st.session_state.show_time_viz = True
         if st.session_state.show_time_viz:
             st.info(f"Computation time: {length:.6f} seconds")
-            st.caption("Run the app locally to get better performances") 
+            #st.caption("Run the app locally to get better performances") 
 
     #Greeks
     if show_greeks_viz:
