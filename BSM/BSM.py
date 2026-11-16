@@ -174,8 +174,8 @@ def WOC(S1, S2, K, T, vol1, vol2, r, rho):
 
     M2 = sps.multivariate_normal.cdf
 
-    return ( S1 * M2( [s1T + (np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2/S1)-np.sqrt(T)*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho1],[rho1,1]]) 
-    + S2 * M2( [s2T + (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T , (np.log(S1/S2)-np.sqrt(T)*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho2],[rho2,1]])
+    return ( S1 * M2( [s1T + (np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2/S1)-T*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho1],[rho1,1]]) 
+    + S2 * M2( [s2T + (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T , (np.log(S1/S2)-T*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho2],[rho2,1]])
     - K  * np.exp(-r * T)  * M2([(np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T], mean=[0,0], cov=[[1,rho],[rho,1]])
     )
 
@@ -217,8 +217,8 @@ def WO_BO_options(S1, S2, K, T, vol1, vol2, r, rho, call=False, best_of=False):
 
     M2 = sps.multivariate_normal.cdf
 
-    WOC = ( S1 * M2( [s1T + (np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2/S1)-np.sqrt(T)*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho1],[rho1,1]]) 
-    + S2 * M2( [s2T + (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T , (np.log(S1/S2)-np.sqrt(T)*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho2],[rho2,1]])
+    WOC = ( S1 * M2( [s1T + (np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2/S1)-T*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho1],[rho1,1]]) 
+    + S2 * M2( [s2T + (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T , (np.log(S1/S2)-T*0.5*sig**2)/sT] , mean=[0,0], cov=[[1,rho2],[rho2,1]])
     - K  * np.exp(-r * T)  * M2([(np.log(S1 / K)  + (r - 0.5 * vol1**2) * T) / s1T , (np.log(S2 / K)  + (r - 0.5 * vol2**2) * T) / s2T], mean=[0,0], cov=[[1,rho],[rho,1]])
     )
 
